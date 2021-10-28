@@ -1,7 +1,40 @@
 -- zadanie 1
--- na laptopie
+
+DECLARE
+  CURSOR cAsystenci IS
+  SELECT nazwisko, zatrudniony
+  FROM pracownicy
+  WHERE ETAT = 'ASYSTENT';
+
+  TYPE tAsystent IS RECORD(
+    nazwisko pracownicy.nazwisko%type,
+    zatrudniony pracownicy.zatrudniony%type
+  );
+
+  vAsystent tAsystent;
+BEGIN
+  OPEN cAsystenci;
+  LOOP
+    FETCH cAsystenci INTO vAsystent;
+    EXIT WHEN cAsystenci%NOTFOUND;
+    DBMS_OUTPUT.PUT_LINE(vAsystent.nazwisko || ' pracuje od ' || vAsystent.zatrudniony);
+  END LOOP;
+  CLOSE cAsystenci;
+END;
+
 -- zadanie 2
--- na laptopie
+
+DECLARE
+  CURSOR cNajlepsi IS
+  SELECT NAZWISKO
+  FROM PRACOWNICY
+  ORDER BY placa_pod + COALESCE(placa_dod, 0) DESC;
+BEGIN
+  FOR vNajlepszy IN cNajlepsi LOOP
+    EXIT WHEN 4 = cNajlepsi%ROWCOUNT;
+    DBMS_OUTPUT.PUT_LINE(cNajlepsi%ROWCOUNT || ' : ' || vNajlepszy.nazwisko);
+  END LOOP; 
+END;
 
 -- zadanie 3
 
