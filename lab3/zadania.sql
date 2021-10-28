@@ -54,3 +54,30 @@ END;
 
 -- zadanie 4
 
+DECLARE
+  CURSOR cBonusy IS
+  SELECT
+    id_prac,
+    etat,
+    nazwa,
+    placa_dod,
+    CASE nazwa
+    WHEN 'ALGORYTMY' THEN 100
+    WHEN 'ADMINISTRACJA' THEN 150
+    ELSE -1 END AS bonus
+  FROM pracownicy join zespoly using(id_zesp)
+  FOR UPDATE OF id_prac;
+BEGIN
+  FOR vPracownik in cBonusy LOOP
+    IF vPracownik.bonus = -1 AND vPracownik.etat = 'STAZYSTA' THEN
+      DELETE FROM PRACOWNICY
+      WHERE id_prac = vPracownik.id_prac;
+    ELSIF vPracownik.bonus <> -1 THEN
+      UPDATE PRACOWNICY
+      SET placa_dod = COALESCE(vPracownik.placa_dod, 0) + vPracownik.bonus
+      WHERE id_prac = vPracownik.id_prac;
+    END IF;
+  END LOOP;
+END;
+
+SELECT nazwisko, etat from pracownicy;
