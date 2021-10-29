@@ -96,3 +96,45 @@ BEGIN
 END;
 
 EXEC POKAZPRACOWNIKOWETATU(PETAT  => 'PROFESOR' /*IN VARCHAR2*/);
+
+-- zadanie 6
+
+CREATE OR REPLACE PROCEDURE RaportKadrowy IS
+  CURSOR cEtaty IS
+  SELECT nazwa
+  FROM etaty
+  ORDER BY 1;
+
+  CURSOR cPracownicy(
+    pEtat pracownicy.etat%type
+  ) IS
+  SELECT nazwisko, (placa_pod + COALESCE(placa_dod, 0)) AS pensja
+  FROM pracownicy
+  WHERE etat = pEtat
+  ORDER BY 1;
+
+  vSumaPensji NUMBER := 0;
+  vLicznik NUMBER := 0;
+BEGIN
+  FOR vEtat IN cEtaty LOOP
+    vSumaPensji := 0;
+    vLicznik := 0;
+    DBMS_OUTPUT.PUT_LINE('Etat: ' || vEtat.nazwa);
+    DBMS_OUTPUT.PUT_LINE('------------------------------');
+    FOR vPracownik IN cPracownicy(vEtat.nazwa) LOOP
+      vLicznik := vLicznik + 1;
+      vSumaPensji := vSumaPensji + vPracownik.pensja;
+      DBMS_OUTPUT.PUT_LINE(cPracownicy%ROWCOUNT || '. ' || vPracownik.nazwisko || ', pensja: ' || vPracownik.pensja);
+    END LOOP;
+    DBMS_OUTPUT.PUT_LINE('Liczba pracownikow: ' || vLicznik);
+    IF vLicznik = 0 THEN
+      DBMS_OUTPUT.PUT_LINE('Średnia pensja: brak');
+    ELSE
+      DBMS_OUTPUT.PUT_LINE('Średnia pensja: ' || (vSumaPensji / vLicznik));
+    END IF;
+    DBMS_OUTPUT.PUT_LINE(' ');
+  END LOOP;
+END;
+
+EXEC RaportKadrowy;
+
