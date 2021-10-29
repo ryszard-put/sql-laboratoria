@@ -80,4 +80,19 @@ BEGIN
   END LOOP;
 END;
 
-SELECT nazwisko, etat from pracownicy;
+-- zadanie 5
+
+CREATE OR REPLACE PROCEDURE PokazPracownikowEtatu(
+  pEtat pracownicy.etat%type
+) IS
+  CURSOR cPracownicyEtatu(pNazwaEtatu pracownicy.etat%type) IS
+  SELECT nazwisko FROM pracownicy
+  WHERE etat = pNazwaEtatu
+  ORDER BY 1;
+BEGIN
+  FOR vPracownik IN cPracownicyEtatu(pEtat) LOOP
+    DBMS_OUTPUT.PUT_LINE(vPracownik.nazwisko);
+  END LOOP;
+END;
+
+EXEC POKAZPRACOWNIKOWETATU(PETAT  => 'PROFESOR' /*IN VARCHAR2*/);
