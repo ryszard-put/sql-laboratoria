@@ -39,3 +39,22 @@ END;
 UPDATE ZESPOLY
 SET adres = 'PIOTROWO 2A'
 WHERE id_zesp = 10;
+
+-- zadanie 2
+
+CREATE TRIGGER WymuszajPlace
+ BEFORE INSERT OR UPDATE OF placa_pod ON Pracownicy
+ FOR EACH ROW
+ WHEN (NEW.etat IS NOT NULL)
+DECLARE
+ vPlacaMin Etaty.placa_min%TYPE;
+ vPlacaMax Etaty.placa_max%TYPE;
+BEGIN
+ SELECT placa_min, placa_max
+ INTO vPlacaMin, vPlacaMax
+ FROM Etaty WHERE nazwa = :NEW.etat;
+ IF :NEW.placa_pod NOT BETWEEN vPlacaMin AND vPlacaMax THEN
+ RAISE_APPLICATION_ERROR(-20001, 'Płaca poza zakresem dla etatu!');
+ END IF;
+END;
+
