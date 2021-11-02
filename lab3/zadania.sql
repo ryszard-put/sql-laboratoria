@@ -243,3 +243,125 @@ CREATE OR REPLACE PACKAGE BODY IntZespoly IS
         RETURN vAdres;
     END;
 END IntZespoly;
+
+-- zadanie 8
+
+CREATE OR REPLACE PACKAGE IntZespoly IS
+    exNazwaNieIstnieje EXCEPTION;
+    exIdNieIstnieje EXCEPTION;
+    exIdIStnieje EXCEPTION;
+
+    PROCEDURE DodajZespol(
+        pNazwa zespoly.nazwa%type,
+        pAdres zespoly.adres%type
+    );
+    PROCEDURE UsunZespolId(
+        pIdZesp zespoly.id_zesp%type
+    );
+    PROCEDURE UsunZespolNazwa(
+        pNazwa zespoly.nazwa%type
+    );
+    PROCEDURE ModyfikujZespol(
+        pIdZesp zespoly.id_zesp%type,
+        pNazwa zespoly.nazwa%type,
+        pAdres zespoly.adres%type
+    );
+    FUNCTION ZnajdzIdZespolu( pNazwa zespoly.nazwa%type ) RETURN zespoly.id_zesp%type;
+    FUNCTION ZnajdzNazweZespolu( pIdZesp zespoly.id_zesp%type ) RETURN zespoly.nazwa%type;
+    FUNCTION ZnajdzAdresZespolu( pIdZesp zespoly.id_zesp%type ) RETURN zespoly.adres%type;
+END IntZespoly;
+
+CREATE OR REPLACE PACKAGE BODY IntZespoly IS
+    PROCEDURE DodajZespol(
+        pNazwa zespoly.nazwa%type,
+        pAdres zespoly.adres%type
+    ) IS
+    BEGIN
+        INSERT INTO zespoly (id_zesp, nazwa, adres)
+        VALUES (zesp_seq.nextval, pNazwa, pAdres);
+
+        IF SQL%NOTFOUND THEN
+          DBMS_OUTPUT.PUT_LINE('Nie udało się dodac zespolu o nazwie: ' || pNazwa);
+        END IF;
+    EXCEPTION
+      WHEN DUP_VAL_ON_INDEX THEN
+        RAISE IntZespoly.exIdIstnieje;
+    END;
+
+    PROCEDURE UsunZespolId(
+        pIdZesp zespoly.id_zesp%type
+    ) IS
+    BEGIN
+        DELETE FROM zespoly
+        WHERE id_zesp = pIdZesp;
+
+        IF SQL%NOTFOUND THEN
+          RAISE IntZespoly.exIdNieIstnieje;
+        END IF;
+    END;
+
+    PROCEDURE UsunZespolNazwa(
+        pNazwa zespoly.nazwa%type
+    ) IS
+    BEGIN
+        DELETE FROM zespoly
+        WHERE nazwa = pNazwa;
+
+        IF SQL%NOTFOUND THEN
+          RAISE IntZespoly.exNazwaNieIstnieje;
+        END IF;
+    END;
+
+    PROCEDURE ModyfikujZespol(
+        pIdZesp zespoly.id_zesp%type,
+        pNazwa zespoly.nazwa%type,
+        pAdres zespoly.adres%type
+    ) IS
+    BEGIN
+        UPDATE zespoly
+        SET
+            nazwa = pNazwa,
+            adres = pAdres
+        WHERE id_zesp = pIdZesp;
+
+        IF SQL%NOTFOUND THEN
+          RAISE IntZespoly.exIdNieIstnieje;
+        END IF;
+    END;
+
+    FUNCTION ZnajdzIdZespolu(
+        pNazwa zespoly.nazwa%type
+    ) RETURN zespoly.id_zesp%type IS
+        vIdZesp zespoly.id_zesp%type;
+    BEGIN
+        SELECT ID_ZESP INTO vIdZesp FROM zespoly WHERE nazwa = pNazwa;
+        RETURN vIdZesp;
+    EXCEPTION
+      WHEN NO_DATA_FOUND THEN
+        RAISE exIdNazwaIstnieje
+    END;
+
+    FUNCTION ZnajdzNazweZespolu(
+        pIdZesp zespoly.id_zesp%type
+    ) RETURN zespoly.nazwa%type IS
+        vNazwa zespoly.nazwa%type;
+    BEGIN
+        SELECT nazwa INTO vNazwa FROM zespoly WHERE id_zesp = pIdZesp;
+        RETURN vNazwa;
+    EXCEPTION
+      WHEN NO_DATA_FOUND THEN
+        RAISE exIdIdIstnieje
+    END;
+
+    FUNCTION ZnajdzAdresZespolu(
+        pIdZesp zespoly.id_zesp%type
+    ) RETURN zespoly.adres%type IS
+        vAdres zespoly.adres%type;
+    BEGIN
+        SELECT adres INTO vAdres FROM zespoly WHERE id_zesp = pIdZesp;
+        RETURN vAdres;
+    EXCEPTION
+      WHEN NO_DATA_FOUND THEN
+        RAISE exIdIdIstnieje
+    END;
+END IntZespoly;
