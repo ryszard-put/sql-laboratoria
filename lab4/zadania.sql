@@ -42,19 +42,16 @@ WHERE id_zesp = 10;
 
 -- zadanie 2
 
-CREATE TRIGGER WymuszajPlace
- BEFORE INSERT OR UPDATE OF placa_pod ON Pracownicy
- FOR EACH ROW
- WHEN (NEW.etat IS NOT NULL)
-DECLARE
- vPlacaMin Etaty.placa_min%TYPE;
- vPlacaMax Etaty.placa_max%TYPE;
+CREATE OR REPLACE TRIGGER PokazPlace
+  BEFORE UPDATE OF placa_pod ON Pracownicy
+  FOR EACH ROW
+  WHEN
+    (OLD.placa_pod <> NEW.placa_pod) OR
+    (NEW.placa_pod IS NULL) OR
+    ((OLD.placa_pod IS NULL) AND (NEW.placa_pod IS NOT NULL))
 BEGIN
- SELECT placa_min, placa_max
- INTO vPlacaMin, vPlacaMax
- FROM Etaty WHERE nazwa = :NEW.etat;
- IF :NEW.placa_pod NOT BETWEEN vPlacaMin AND vPlacaMax THEN
- RAISE_APPLICATION_ERROR(-20001, 'Płaca poza zakresem dla etatu!');
- END IF;
+  DBMS_OUTPUT.PUT_LINE('Pracownik ' || :OLD.nazwisko);
+  DBMS_OUTPUT.PUT_LINE('Płaca przed modyfikacją: ' || :OLD.placa_pod);
+  DBMS_OUTPUT.PUT_LINE('Płaca po modyfikacji: ' || :NEW.placa_pod);
 END;
 
