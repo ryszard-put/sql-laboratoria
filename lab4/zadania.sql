@@ -74,4 +74,13 @@ BEGIN
   END IF;
 END;
 
+-- zadanie 4
+CREATE OR REPLACE TRIGGER UzupelnijId
+  BEFORE INSERT ON zespoly
+  FOR EACH ROW
+  WHEN (NEW.id_zesp IS NULL)
+BEGIN
+  :NEW.id_zesp := zesp_seq.nextval;
+END;
+
 
