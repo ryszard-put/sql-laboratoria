@@ -55,3 +55,23 @@ BEGIN
   DBMS_OUTPUT.PUT_LINE('Płaca po modyfikacji: ' || :NEW.placa_pod);
 END;
 
+-- zadanie 3
+CREATE OR REPLACE TRIGGER UzupelnijPlace
+  BEFORE INSERT ON pracownicy
+  FOR EACH ROW
+  WHEN (NEW.placa_pod IS NULL OR NEW.placa_dod IS NULL)
+DECLARE
+  vPlacaPod pracownicy.placa_pod%type;
+BEGIN
+  IF :NEW.placa_pod IS NULL THEN
+    SELECT placa_min INTO vPlacaPod
+    FROM ETATY
+    WHERE :NEW.etat = nazwa;
+    :NEW.placa_pod := vPlacaPod;
+  END IF;
+  IF :NEW.placa_dod IS NULL THEN
+    :NEW.placa_dod := 0;
+  END IF;
+END;
+
+
