@@ -83,4 +83,44 @@ BEGIN
   :NEW.id_zesp := zesp_seq.nextval;
 END;
 
+-- zadanie 5
+CREATE OR REPLACE VIEW Szefowie
+(szef, pracownicy)
+  AS
+SELECT
+  nazwisko AS szef,
+  (
+    SELECT COUNT(id_szefa)
+    FROM PRACOWNICY p
+    WHERE p.id_szefa = s.id_prac
+  ) AS pracownicy
+FROM pracownicy s
+WHERE EXISTS (SELECT id_prac FROM pracownicy p WHERE p.id_szefa = s.id_prac);
 
+CREATE OR REPLACE TRIGGER UsuniecieSzefa
+  INSTEAD OF DELETE ON Szefowie
+DECLARE
+  vPodwladniSzefowie NUMBER;
+BEGIN
+  SELECT COUNT(id_prac) INTO vPodwladniSzefowie
+  FROM pracownicy
+  WHERE id_szefa = (
+    SELECT id_prac
+    FROM pracownicy
+    WHERE nazwisko = :OLD.szef
+  ) AND nazwisko IN (SELECT szef FROM Szefowie);
+  IF vPodwladniSzefowie > 0 THEN
+    RAISE_APPLICATION_ERROR(
+      -20001,
+      'Jeden z podwładnych usuwanego pracownika jest szefem innych pracowników. Usuwanie anulowane!'
+    );
+  END IF;
+  DELETE FROM pracownicy
+  WHERE id_szefa = (
+    SELECT id_prac FROM PRACOWNICY
+    WHERE nazwisko = :OLD.szef
+  );
+
+  DELETE FROM PRACOWNICY
+  WHERE nazwisko = :OLD.szef;
+END;
