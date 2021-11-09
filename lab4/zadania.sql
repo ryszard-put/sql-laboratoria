@@ -206,3 +206,15 @@ END;
 -- Różnica miedzy AFTER i BEFORE to kolejność wykonywania Triggera dla poszczególnych rekordów,
 -- before rozpoczyna od szefa, ktory zainicjowal usuwanie i przechodzi kaskadowo do jego podwladnych
 -- after wykonuje sie w odwrotnej kolejności niż before 
+
+-- zadanie 8
+ALTER TABLE pracownicy ENABLE ALL TRIGGERS;
+SELECT TRIGGER_NAME, TABLE_NAME, STATUS FROM USER_TRIGGERS;
+
+-- zadanie 9
+SELECT TRIGGER_NAME FROM USER_TRIGGERS WHERE TABLE_NAME IN ('PRACOWNICY', 'ZESPOLY');
+DROP TRIGGER AKTUALIZUJZESPOLY;
+DROP TRIGGER LOGUJOPERACJE;
+DROP TRIGGER USUN_PRAC;
+DROP TRIGGER UZUPELNIJID;
+DROP TRIGGER UZUPELNIJPLACE;
