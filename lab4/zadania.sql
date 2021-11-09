@@ -160,3 +160,45 @@ BEGIN
   END IF;
 END;
 
+-- zadanie 7
+ALTER TABLE pracownicy DROP CONSTRAINT FK_ID_SZEFA;
+ALTER TABLE pracownicy
+ADD CONSTRAINT FK_ID_SZEFA
+  FOREIGN KEY (id_szefa)
+  REFERENCES pracownicy (id_prac)
+  ON DELETE CASCADE;
+
+
+SET SERVEROUTPUT ON;
+
+CREATE OR REPLACE TRIGGER Usun_Prac
+  AFTER DELETE ON PRACOWNICY
+  FOR EACH ROW
+BEGIN
+  DBMS_OUTPUT.PUT_LINE('Usuwany pracownik: ' || :OLD.nazwisko);
+END;
+
+
+SELECT * FROM PRACOWNICY;
+DELETE FROM PRACOWNICY WHERE id_prac = 130;
+ROLLBACK;
+-- Przy uzyciu AFTER usuniecie pracownika Brzezinski powoduje taki efekt:
+-- Usuwany pracownik: KROLIKOWSKI
+-- Usuwany pracownik: KOSZLAJDA
+-- Usuwany pracownik: JEZIERSKI
+-- Usuwany pracownik: MORZY
+-- Usuwany pracownik: BRZEZINSKI
+
+CREATE OR REPLACE TRIGGER Usun_Prac
+  BEFORE DELETE ON PRACOWNICY
+  FOR EACH ROW
+BEGIN
+  DBMS_OUTPUT.PUT_LINE('Usuwany pracownik: ' || :OLD.nazwisko);
+END;
+
+-- Przy uzyciu BEFORE usuniecie pracownika Brzezinski powoduje taki efekt:
+-- Usuwany pracownik: BRZEZINSKI
+-- Usuwany pracownik: MORZY
+-- Usuwany pracownik: KROLIKOWSKI
+-- Usuwany pracownik: KOSZLAJDA
+-- Usuwany pracownik: JEZIERSKI
