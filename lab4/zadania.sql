@@ -202,3 +202,7 @@ END;
 -- Usuwany pracownik: KROLIKOWSKI
 -- Usuwany pracownik: KOSZLAJDA
 -- Usuwany pracownik: JEZIERSKI
+
+-- Różnica miedzy AFTER i BEFORE to kolejność wykonywania Triggera dla poszczególnych rekordów,
+-- before rozpoczyna od szefa, ktory zainicjowal usuwanie i przechodzi kaskadowo do jego podwladnych
+-- after wykonuje sie w odwrotnej kolejności niż before 
