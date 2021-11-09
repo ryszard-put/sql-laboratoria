@@ -63,7 +63,7 @@ CREATE OR REPLACE TRIGGER UzupelnijPlace
 DECLARE
   vPlacaPod pracownicy.placa_pod%type;
 BEGIN
-  IF :NEW.placa_pod IS NULL THEN
+  IF :NEW.ETAT IS NOT NULL AND :NEW.placa_pod IS NULL THEN
     SELECT placa_min INTO vPlacaPod
     FROM ETATY
     WHERE :NEW.etat = nazwa;
@@ -124,3 +124,39 @@ BEGIN
   DELETE FROM PRACOWNICY
   WHERE nazwisko = :OLD.szef;
 END;
+
+-- zadanie 6
+ALTER TABLE ZESPOLY ADD liczba_pracownikow NUMBER;
+
+UPDATE ZESPOLY
+SET
+  liczba_pracownikow = (
+    SELECT COUNT(id_prac) FROM PRACOWNICY WHERE pracownicy.id_zesp = zespoly.id_zesp
+  );
+
+SET AUTOCOMMIT ON;
+
+CREATE OR REPLACE TRIGGER AktualizujZespoly
+  AFTER INSERT OR UPDATE OR DELETE ON pracownicy
+  FOR EACH ROW
+  WHEN ((OLD.id_zesp <> NEW.id_zesp) OR (OLD.id_zesp IS NULL AND NEW.id_zesp IS NOT NULL) OR (OLD.id_zesp IS NOT NULL AND NEW.id_zesp IS NULL))
+BEGIN
+  IF INSERTING THEN
+    UPDATE ZESPOLY
+    SET liczba_pracownikow = liczba_pracownikow + 1
+    WHERE id_zesp = :NEW.id_zesp;
+  ELSIF UPDATING THEN
+    UPDATE ZESPOLY
+    SET liczba_pracownikow = liczba_pracownikow + 1
+    WHERE id_zesp = :NEW.id_zesp;
+
+    UPDATE ZESPOLY
+    SET liczba_pracownikow = liczba_pracownikow - 1
+    WHERE id_zesp = :OLD.id_zesp;
+  ELSIF DELETING THEN
+    UPDATE ZESPOLY
+    SET liczba_pracownikow = liczba_pracownikow - 1
+    WHERE id_zesp = :OLD.id_zesp;
+  END IF;
+END;
+
