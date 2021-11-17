@@ -199,7 +199,38 @@ public class Lab_JDBC {
 //        } catch(SQLException ex){
 //            System.out.println("Błąd wykonania polecenia: " + ex.getMessage());
 //        }
-
+// zadanie 6
+//        try{
+//            conn.setAutoCommit(false);
+//            Statement stmt = conn.createStatement();
+//            long start = System.nanoTime();
+//
+//            for(int i = 0; i < 2000; ++i){
+//                stmt.executeUpdate("INSERT INTO pracownicy (id_prac, nazwisko) VALUES (prac_seq.nextval, 'NOWY PRACOWNIK')");
+//            }
+//
+//            long czas = System.nanoTime() - start;
+//            System.out.println("Czas sekwencyjnego wykonania: " + czas + "ns");
+//
+//            PreparedStatement pstmt = conn.prepareStatement("INSERT INTO pracownicy (id_prac, nazwisko) VALUES (prac_seq.nextval, 'NOWY PRACOWNIK')");
+//
+//            start = System.nanoTime();
+//
+//            for(int i = 0; i < 2000; ++i){
+//                pstmt.addBatch();
+//            }
+//            pstmt.executeBatch();
+//
+//            czas = System.nanoTime() - start;
+//            System.out.println("Czas wsadowego wykonania: " + czas + "ns");
+//
+//            conn.rollback();
+//            stmt.close();
+//            pstmt.close();
+//        } catch(SQLException ex){
+//            System.out.println("Błąd wykonania polecenia: " + ex.getMessage());
+//        }
+        // 20s vs 0.04s 
 
         try {
             conn.close();
