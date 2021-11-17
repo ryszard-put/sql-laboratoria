@@ -1,6 +1,5 @@
 package lab_jdbc;
 
-import javax.swing.plaf.nimbus.State;
 import java.sql.*;
 import java.util.Properties;
 import java.util.Arrays;
