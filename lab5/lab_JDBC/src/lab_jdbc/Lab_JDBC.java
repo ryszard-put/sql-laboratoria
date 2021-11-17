@@ -2,6 +2,7 @@ package lab_jdbc;
 
 import java.sql.*;
 import java.util.Properties;
+import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -15,7 +16,6 @@ public class Lab_JDBC {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        System.out.println("KURWA");
         Connection conn = null;
         String connectionString =
         "jdbc:oracle:thin:@//admlab2.cs.put.poznan.pl:1521/"+
@@ -52,8 +52,7 @@ public class Lab_JDBC {
 //        } catch(SQLException ex) {
 //            System.out.println("Błąd wykonania polecenia: " + ex.getMessage());
 //        }
-        
-        // Zadanie 1
+// Zadanie 1
 //        System.out.println("Zadanie 1");
 //        try (
 //            Statement stmt1 = conn.createStatement();
@@ -88,32 +87,48 @@ public class Lab_JDBC {
 //        } catch(SQLException ex) {
 //            System.out.println("Błąd wykonania polecenia: " + ex.getMessage());
 //        }
-        try(
-            Statement stmt = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
-            ResultSet rs = stmt.executeQuery(
-            """
-            select nazwisko, placa_pod + coalesce(placa_dod, 0) as pensja
-            from pracownicy p inner join etaty e on p.etat = e.nazwa
-            where p.etat = 'ASYSTENT'
-            order by 2 desc
-            """)
-        ) {
-            rs.afterLast();
-            rs.previous();
-            System.out.printf("%s %.2f%n", rs.getString(1), rs.getFloat(2));
-            rs.previous();
-            rs.previous();
-            System.out.printf("%s %.2f%n", rs.getString(1), rs.getFloat(2));
-            rs.beforeFirst();
-            rs.next();
-            rs.next();
-            System.out.printf("%s %.2f%n", rs.getString(1), rs.getFloat(2));
-            
-        } catch(SQLException ex) {
-            System.out.println("Błąd wykonania polecenia: " + ex.getMessage());
-        }
+// zadanie 2
+//        try(
+//            Statement stmt = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+//            ResultSet rs = stmt.executeQuery(
+//            """
+//            select nazwisko, placa_pod + coalesce(placa_dod, 0) as pensja
+//            from pracownicy p inner join etaty e on p.etat = e.nazwa
+//            where p.etat = 'ASYSTENT'
+//            order by 2 desc
+//            """)
+//        ) {
+//            rs.afterLast();
+//            rs.previous();
+//            System.out.printf("%s %.2f%n", rs.getString(1), rs.getFloat(2));
+//            rs.previous();
+//            rs.previous();
+//            System.out.printf("%s %.2f%n", rs.getString(1), rs.getFloat(2));
+//            rs.beforeFirst();
+//            rs.next();
+//            rs.next();
+//            System.out.printf("%s %.2f%n", rs.getString(1), rs.getFloat(2));
+//
+//        } catch(SQLException ex) {
+//            System.out.println("Błąd wykonania polecenia: " + ex.getMessage());
+//        }
+// zadanie 3
 
-        
+//        int [] zwolnienia={150, 200, 230};
+//        String [] zatrudnienia={"Kandefer", "Rygiel", "Boczar"};
+//        try(Statement stmt = conn.createStatement()){
+//            int changes = stmt.executeUpdate("DELETE FROM pracownicy WHERE id_prac IN (" +
+//                    String.join(",", Arrays.stream(zwolnienia).mapToObj(String::valueOf).toArray(String[]::new)) + ")");
+//            System.out.println("Usunięto " + changes + " rekordów");
+//            changes = 0;
+//            for(String nazwisko : zatrudnienia){
+//                changes += stmt.executeUpdate("INSERT INTO pracownicy (id_prac, nazwisko) VALUES (prac_seq.nextval, '" + nazwisko + "')");
+//            }
+//            System.out.println("Wstawiono " + changes + " rekordy");
+//        }  catch(SQLException ex) {
+//            System.out.println("Błąd wykonania polecenia: " + ex.getMessage());
+//        }
+
         try {
             conn.close();
         } catch (SQLException ex) {
