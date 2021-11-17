@@ -128,6 +128,60 @@ public class Lab_JDBC {
 //        }  catch(SQLException ex) {
 //            System.out.println("Błąd wykonania polecenia: " + ex.getMessage());
 //        }
+// zadanie 4
+//        try {
+//            conn.setAutoCommit(false);
+//            System.out.println("Wyłączono automatyczne zatwierdzanie transakcji");
+//        } catch (SQLException ex) {
+//            System.out.println("Błąd wykonania polecenia: " + ex.getMessage());
+//        }
+//        try{
+//            Statement stmt = conn.createStatement();
+//            ResultSet rs1 = stmt.executeQuery("SELECT nazwa FROM etaty");
+//            System.out.println("Etaty przed zmianą");
+//            while(rs1.next()) {
+//                System.out.println(rs1.getString(1));
+//            }
+//            rs1.close();
+//
+//            stmt.executeUpdate("INSERT INTO etaty (nazwa) VALUES ('NOWY ETAT')");
+//            System.out.println("Wstawienie nowego etatu");
+//            ResultSet rs2 = stmt.executeQuery("SELECT nazwa FROM etaty");
+//            System.out.println("Etaty po zmianie");
+//            while(rs2.next()) {
+//                System.out.println(rs2.getString(1));
+//            }
+//            rs2.close();
+//
+//            conn.rollback();
+//            System.out.println("Wycofanie transakcji");
+//
+//            ResultSet rs3 = stmt.executeQuery("SELECT nazwa FROM etaty");
+//            System.out.println("Etaty po wycofaniu transakcji");
+//            while(rs3.next()) {
+//                System.out.println(rs3.getString(1));
+//            }
+//            rs3.close();
+//
+//            stmt.executeUpdate("INSERT INTO etaty (nazwa) VALUES ('NOWY ETAT')");
+//            System.out.println("Wstawienie nowego etatu");
+//
+//            conn.commit();
+//            System.out.println("Zatwierdzono transakcje");
+//
+//            ResultSet rs4 = stmt.executeQuery("SELECT nazwa FROM etaty");
+//            System.out.println("Etaty po zatwierdzeniu transakcji");
+//            while(rs4.next()) {
+//                System.out.println(rs4.getString(1));
+//            }
+//            rs4.close();
+//
+//            stmt.close();
+//
+//        } catch(SQLException ex){
+//            System.out.println("Błąd wykonania polecenia: " + ex.getMessage());
+//        }
+
 
         try {
             conn.close();
