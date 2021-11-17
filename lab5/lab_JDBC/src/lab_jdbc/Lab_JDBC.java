@@ -181,6 +181,24 @@ public class Lab_JDBC {
 //        } catch(SQLException ex){
 //            System.out.println("Błąd wykonania polecenia: " + ex.getMessage());
 //        }
+// zadanie 5
+//        String [] nazwiska={"Woźniak", "Dąbrowski", "Kozłowski"};
+//        int [] place={1300, 1700, 1500};
+//        String [] etaty={"ASYSTENT", "PROFESOR", "ADIUNKT"};
+//
+//        try{
+//            PreparedStatement pstmt = conn.prepareStatement("INSERT INTO pracownicy (id_prac, nazwisko, etat, placa_pod) VALUES (prac_seq.nextval,?,?,?)");
+//            for(int i = 0; i < nazwiska.length; ++i){
+//                pstmt.setString(1, nazwiska[i]);
+//                pstmt.setString(2, etaty[i]);
+//                pstmt.setInt(3, place[i]);
+//                int changes = pstmt.executeUpdate();
+//                System.out.println("Wstawiono pracownika " + nazwiska[i]);
+//            }
+//            pstmt.close();
+//        } catch(SQLException ex){
+//            System.out.println("Błąd wykonania polecenia: " + ex.getMessage());
+//        }
 
 
         try {
