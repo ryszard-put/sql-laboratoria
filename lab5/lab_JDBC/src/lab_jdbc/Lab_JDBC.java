@@ -1,5 +1,6 @@
 package lab_jdbc;
 
+import javax.swing.plaf.nimbus.State;
 import java.sql.*;
 import java.util.Properties;
 import java.util.Arrays;
@@ -230,7 +231,22 @@ public class Lab_JDBC {
 //        } catch(SQLException ex){
 //            System.out.println("Błąd wykonania polecenia: " + ex.getMessage());
 //        }
-        // 20s vs 0.04s 
+        // 20s vs 0.04s
+// zadanie 7
+        try{
+            CallableStatement stmt = conn.prepareCall("{? = call TransformujNazwisko(?,?)}");
+            stmt.setInt(2, 110);
+            stmt.registerOutParameter(1, Types.INTEGER);
+            stmt.registerOutParameter(3, Types.VARCHAR);
+
+            stmt.execute();
+            int status = stmt.getInt(1);
+            String nazwisko = stmt.getString(3);
+            System.out.println("Status: " + status);
+            System.out.println("Nazwisko: " + nazwisko);
+        } catch(SQLException ex){
+            System.out.println("Błąd wykonania polecenia: " + ex.getMessage());
+        }
 
         try {
             conn.close();
